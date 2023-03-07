@@ -126,7 +126,7 @@ async def list_handler(message: types.Message) -> None:
         res = subscribe_service.get_addresses_for_chat_id(
             chat_id=chat_id,
         )
-        reply_message = "\n".join(
+        reply_message = "\n\n".join(
             [
                 f"<a href='https://kas.fyi/address/{address}'>{address}</a>"
                 for address in res
