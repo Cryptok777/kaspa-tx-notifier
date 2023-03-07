@@ -129,12 +129,14 @@ async def list_handler(message: types.Message) -> None:
         reply_message = "\n".join(
             [
                 f"<a href='https://kas.fyi/address/{address}'>{address}</a>"
-                for index, address in enumerate(res)
+                for address in res
             ]
         )
-        reply_message += f"\n\n🛑 To stop any monitor, reply: <code>/stop ADDRESS</code>"
+
         await message.answer(
-            reply_message or "You are not monitoring any address right now",
+            reply_message
+            + f"\n\n🛑 To stop any monitor, reply: <code>/stop ADDRESS</code>"
+            or "You are not monitoring any address right now",
             disable_web_page_preview=True,
         )
     except Exception as e:
