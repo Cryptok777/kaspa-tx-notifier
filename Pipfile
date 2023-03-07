@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+sqlalchemy = "==2.0.4"
+grpcio = "*"
+grpcio-tools = "*"
+load_dotenv = "*"
+requests = "*"
+aiogram = "*"
+psycopg2 = {extras = ["async"], version = "*"}
+asyncpg = "*"
+greenlet = "*"
+
+[dev-packages]
+black = "*"
+
+[requires]
+python_version = "3.10"
+
+[pipenv]
+allow_prereleases = true
