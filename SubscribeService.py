@@ -50,3 +50,13 @@ class SubscribeService:
             .all()
         )
         return [row.chat_id for row in chat_id_rows]
+
+    def get_addresses_for_chat_id(self, chat_id: int):
+        chat_id_rows = (
+            self.db_session.query(SubscribedAddress)
+            .where(
+                SubscribedAddress.chat_id == chat_id, SubscribedAddress.deleted == False
+            )
+            .all()
+        )
+        return [row.address for row in chat_id_rows]

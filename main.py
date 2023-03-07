@@ -119,6 +119,29 @@ async def unsubscribe_all_handler(message: types.Message) -> None:
         await message.answer("Something went wrong!")
 
 
+@router.message(Command(commands=["list"]))
+async def list_handler(message: types.Message) -> None:
+    chat_id = message.chat.id
+    try:
+        res = subscribe_service.get_addresses_for_chat_id(
+            chat_id=chat_id,
+        )
+        reply_message = "\n".join(
+            [
+                f"<a href='https://kas.fyi/address/{address}'>{address}</a>"
+                for index, address in enumerate(res)
+            ]
+        )
+        reply_message += f"\n\n🛑 To stop any monitor, reply: <code>/stop ADDRESS</code>"
+        await message.answer(
+            reply_message or "You are not monitoring any address right now",
+            disable_web_page_preview=True,
+        )
+    except Exception as e:
+        _logger.error(e)
+        await message.answer("Something went wrong!")
+
+
 async def main():
     dp = Dispatcher()
     dp.include_router(router)
