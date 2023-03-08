@@ -62,19 +62,19 @@ def verify_param(message, short=False):
 async def handle_subscribe(message: types.Message, address: str, chat_id: int):
     res = subscribe_service.subscribe(chat_id=chat_id, address=address)
     if res:
-        await message.answer(f"You've started monitoring {address}")
+        await message.answer(f"You've started watching {address}")
     else:
         await message.answer(
-            f"Failed to start monitoring {address}, you may have already set up a monitor for that address"
+            f"Failed to start watching {address}, you may have already set up a watch for that address"
         )
 
 
 async def handle_unsubscribe(message: types.Message, address: str, chat_id: int):
     res = subscribe_service.unsubscribe(chat_id=chat_id, address=address)
     if res:
-        await message.answer(f"You've stopped monitoring {address}")
+        await message.answer(f"You've stopped watching {address}")
     else:
-        await message.answer(f"Failed to stop monitoring {address}")
+        await message.answer(f"Failed to stop watching {address}")
 
 
 async def handle_unsubscribe_all(message: types.Message, chat_id: int):
@@ -82,9 +82,9 @@ async def handle_unsubscribe_all(message: types.Message, chat_id: int):
         chat_id=chat_id,
     )
     if res:
-        await message.answer(f"You've stopped monitoring all addresses")
+        await message.answer(f"You've stopped watching all addresses")
     else:
-        await message.answer(f"Failed to stop monitoring addresses")
+        await message.answer(f"Failed to stop watching addresses")
 
 
 @router.message(CommandStart())
@@ -132,14 +132,34 @@ async def list_handler(message: types.Message) -> None:
                 for address in res
             ]
         )
-        reply_message += f"\n\n🛑 To stop any monitor, reply: <code>/stop ADDRESS</code>"
+        reply_message += f"\n\n🛑 To stop any watch, reply: <code>/stop ADDRESS</code>"
         await message.answer(
-            reply_message if res else "You are not monitoring any address right now",
+            reply_message if res else "You are not watching any address right now",
             disable_web_page_preview=True,
         )
     except Exception as e:
         _logger.error(e)
         await message.answer("Something went wrong!")
+
+
+@router.callback_query()
+async def callback_query_stop_watching(callback_query: types.CallbackQuery):
+    if (
+        callback_query.message
+        and callback_query.message.chat
+        and callback_query.message
+        and callback_query.message.reply_markup
+        and callback_query.message.reply_markup.inline_keyboard
+    ):
+        chat_id = callback_query.message.chat.id
+        button = callback_query.message.reply_markup.inline_keyboard[0][0]
+        callback_data = button.callback_data
+        if callback_data and chat_id:
+            await handle_unsubscribe(
+                message=callback_query.message,
+                address="kaspa:" + callback_data,
+                chat_id=chat_id,
+            )
 
 
 async def main():
@@ -150,9 +170,6 @@ async def main():
     await client.initialize_all()
     asyncio.create_task(blocks.start(client, bot, subscribe_service))
     await asyncio.create_task(dp.start_polling(bot))
-
-    # async with asyncio.TaskGroup() as tg:
-    #     tg.create_task(dp.start_polling(bot))
 
 
 if __name__ == "__main__":
