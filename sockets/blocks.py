@@ -4,6 +4,8 @@ import time
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 
+from main import DONATION_MESSAGE
+
 
 _logger = logging.getLogger(__name__)
 
@@ -13,6 +15,7 @@ def get_message_text(address, amount, tx_id):
     return (
         f"🔔 Address: <b><a href='https://kas.fyi/address/{address}'>{short_address}</a></b>\n"
         f"💰 Amount: <a href='https://kas.fyi/transaction/{tx_id}'>{int(amount) / 1e8} KAS</a>"
+        f"{DONATION_MESSAGE}"
     )
 
 

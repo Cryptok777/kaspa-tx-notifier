@@ -45,6 +45,8 @@ task_runner = None
 # db
 subscribe_service = SubscribeService()
 
+DONATION_ADDRESS = "kaspa:qpnsy5fc592kcnu6vnx8aknskhmu6x9qksec084v043pjk5hur6vw9e87wpg2"
+DONATION_MESSAGE = f"\n\n❤️ Find it useful? Please consider donating to <a href='https://kas.fyi/address/{DONATION_ADDRESS}'>Kas.fyi Dev Fund</a>"
 
 def verify_param(message, short=False):
     command_body = message.text.split(" ")
